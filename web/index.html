@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ESP32 Телеметрия</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<div class="container">
+
+<h1>ESP32 Телеметрия</h1>
+
+<div class="grid">
+  <button class="start" onclick="startRec()">СТАРТ</button>
+  <button class="stop" onclick="stopRec()">СТОП</button>
+
+  <div class="card">
+    <div class="label">Запись</div>
+    <div class="value" id="recording">---</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Текущий файл</div>
+    <div class="value" id="file">---</div>
+  </div>
+
+  <div class="card">
+    <div class="label">GPS</div>
+    <div class="value" id="gpsStatus">---</div>
+  </div>
+
+  <div class="card">
+    <div class="label">HDOP</div>
+    <div class="value" id="hdop">---</div>
+  </div>
+
+  <div class="card">
+    <div class="label">SD-карта</div>
+    <div class="value" id="sdStatus">---</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Датчики</div>
+    <div class="value" id="sensorStatus">---</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Скорость</div>
+    <div class="value"><span id="speed">0.0</span> км/ч</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Газ</div>
+    <div class="value"><span id="throttle">0.00</span> В</div>
+  </div>
+
+  <div class="card">
+    <div class="label">Ускорение X/Y/Z</div>
+    <div class="value"><span id="accel">---</span></div>
+  </div>
+
+  <div class="card">
+    <div class="label">Свободная память</div>
+    <div class="value"><span id="heap">---</span></div>
+  </div>
+</div>
+
+<h2>Сохранённые заезды</h2>
+<div class="grid">
+  <button class="open small" onclick="loadFiles()">Обновить список</button>
+</div>
+<br>
+<div id="files"></div>
+
+<h2>Карта трека</h2>
+<div class="info" id="mapInfo">Выбери файл и нажми “Открыть трек”. Интернет не нужен.</div>
+
+<div class="card" id="lapSummary" style="margin-top:12px; display:none;">
+  <div class="label">Круги в открытом CSV</div>
+  <div class="value" id="lapSummaryText">---</div>
+</div>
+
+<div class="optim-card" id="optimalPanel">
+  <div class="label">Оптимальный круг</div>
+  <div class="optim-row" id="optimalText">---</div>
+  <button class="open small" onclick="buildOptimalAnalysis()" style="margin-top:10px;">Построить оптимальный круг</button>
+  <div id="compareBlock" style="display:none; margin-top:12px;">
+    <div class="label">Сравнить с кругом</div>
+    <select id="compareLapSelect" onchange="renderSelectedLapComparison()"></select>
+    <button class="delete small" onclick="showAllTrack()">Показать весь трек</button>
+  </div>
+</div>
+
+<div class="loss-legend" id="lossLegend">
+  <div class="loss-legend-item">
+    <span class="loss-color loss-green"></span>
+    <span>Нормально</span>
+  </div>
+  <div class="loss-legend-item">
+    <span class="loss-color loss-yellow"></span>
+    <span>Небольшая потеря</span>
+  </div>
+  <div class="loss-legend-item">
+    <span class="loss-color loss-red"></span>
+    <span>Медленно</span>
+  </div>
+</div>
+
+<canvas id="map" width="900" height="430"></canvas>
+<div class="point-control" id="pointControl">
+  <div class="label">Выбор точки ползунком</div>
+  <input id="pointSlider" type="range" min="0" max="0" value="0" oninput="selectPointBySlider(this.value)">
+  <div class="value" id="pointSliderText">Точка: ---</div>
+</div>
+<div class="point-log" id="pointLog"><pre id="pointLogText"></pre></div>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>
